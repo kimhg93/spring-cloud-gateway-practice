@@ -1,0 +1,84 @@
+logging:
+  charset:
+    console: UTF-8
+  level:
+    root: info
+
+server:
+  port: 9098
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+  endpoint:
+    gateway:
+      enabled: true
+
+spring:
+  jpa:
+    database-platform: com.practice.gateway.config.SQLDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:sqlite:gateway.db
+    driver-class-name: org.sqlite.JDBC
+    username: admin
+    password: admin
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+  cloud:
+    gateway:
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
+
+
+
+
+# 동작하는 필터 설정
+
+# 1.RewritePath : /test 로 접속했을 때 / 로 접속, /test/test 로 접속했을 때 /test
+#   패턴 설정에 따라 유동적으로 적용 할 수 있을 것 같다.
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: default
+#          uri: https://github.com
+#          predicates:
+#            - Path=/test/**
+#          filters:
+#            - RewritePath=/test/?(?<segment>.*), /$\{segment}
+
+
+# 2. StripPrefix : filters: - StripPrefix=2 를 주면 value 값에 따라 prefix를 제거해줌
+#   value 가 2 라면, /test/test 접속 시 / , /test/test/test 접속 시 /test
+#   단순히 prefix 제거를 위한 용도라면 쓰기 편하지만 이왕이면 rewritePath로 하는게 좋을 것 같음
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: default
+#          uri: https://github.com
+#          predicates:
+#            - Path=/test/test/**
+#          filters:
+#            - StripPrefix=2
+
+# 3. setPath : /test/test/{segment} 를 /test/{segment} 변경해줌
+#   /test/test/HelloWorld 접속 시 /test/HelloWorld
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: default
+#          uri: https://github.com
+#          predicates:
+#            - Path=/test/test/{segment}
+#          filters:
+#            - SetPath=/test/{segment}
+
+
+
+
+
