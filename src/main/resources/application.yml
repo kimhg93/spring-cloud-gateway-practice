@@ -7,15 +7,6 @@ logging:
 server:
   port: 9098
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: gateway
-  endpoint:
-    gateway:
-      enabled: true
-
 spring:
   jpa:
     database-platform: com.practice.gateway.config.SQLDialect
